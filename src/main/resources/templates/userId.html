@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:utext="${user.getName()+ ' ' + user.getSurname()}"></title>
+</head>
+<body>
+<p th:utext="${user.getName()}">Value</p>
+<p th:utext="${user.getSurname()}">Value</p>
+<p th:utext="${user.getEmail()}">Value</p>
+</body>
+</html>
