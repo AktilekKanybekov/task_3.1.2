@@ -1,52 +1,64 @@
 package net.proselyte.springbootdemo_311.service;
 
-import net.proselyte.springbootdemo_311.dao.UserDao;
 import net.proselyte.springbootdemo_311.model.User;
+import net.proselyte.springbootdemo_311.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Transactional
     @Override
-    public void addUser(User user) {
-        userDao.addUser(user);
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public User getUserById(Long id) {
-        return userDao.getUserById(id);
+    public User readUser(long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.orElse(null);
     }
 
     @Transactional
     @Override
     public void updateUser(Long id, User user) {
-        userDao.updateUser(id, user);
+        user.setId(id);
+        userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public void deleteUser(Long id) {
-        userDao.deleteUser(id);
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
     }
 
-
+    @Transactional(readOnly = true)
+    @Override
+    public List<User> getUsersAndRoles() {
+        return userRepository.listUsersAndRoles();
+    }
 }
