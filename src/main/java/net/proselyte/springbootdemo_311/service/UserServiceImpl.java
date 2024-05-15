@@ -3,6 +3,7 @@ package net.proselyte.springbootdemo_311.service;
 import net.proselyte.springbootdemo_311.model.User;
 import net.proselyte.springbootdemo_311.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -42,7 +45,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public void updateUser(Long id, User user) {
+        user.setId(id);
         userRepository.save(user);
     }
 
@@ -57,5 +61,4 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersAndRoles() {
         return userRepository.listUsersAndRoles();
     }
-
 }
